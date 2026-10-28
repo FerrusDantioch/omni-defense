@@ -735,16 +735,20 @@ version — à incrémenter à chaque mise à jour déployée. `FICHIERS_A_METTR
 liste tous les fichiers du jeu, dressée à partir de l'ordre de chargement des scripts
 dans `index.html` (voir en tête de ce document) plus le manifeste et les deux icônes.
 
-À `install` : `cache.addAll(...)` puis `self.skipWaiting()` (la nouvelle version prend
-effet sans attendre la fermeture de tous les onglets). À `activate` : suppression de
-tout cache dont le nom diffère de `CACHE_NOM` (anciennes versions), puis
-`self.clients.claim()` — sans cet appel, un onglet déjà ouvert au moment du déploiement
-resterait contrôlé par l'ancien service worker (et donc l'ancien cache) jusqu'à sa
-fermeture complète ; `skipWaiting()` seul active le nouveau worker en arrière-plan mais
-ne lui donne pas le contrôle des pages déjà ouvertes. À `fetch` : stratégie cache-first
-(réponse depuis le cache si présente, sinon requête réseau normale) — la plus simple et
-la plus adaptée ici, puisque le jeu ne dépend d'aucune donnée dynamique ni d'API
-externe.
+À `install` : `cache.addAll(...)`, **sans** `self.skipWaiting()` (depuis la v35,
+octobre 2026) : la nouvelle version attend que le joueur touche « Mettre à jour » sur
+l'écran d'accueil (`#bandeau-mise-a-jour`, objet `MiseAJour` en fin de `jeu.js`), qui
+envoie le message `{ type: 'activer' }` ; le service worker appelle alors
+`skipWaiting()` et la page se recharge à l'événement `controllerchange`. Le jeu ne
+change donc jamais par surprise, ni en pleine partie (seule exception, fixée par le
+navigateur : un jeu complètement fermé trouve la nouvelle version à l'ouverture
+suivante). À `activate` : suppression de nos anciens caches, puis
+`self.clients.claim()` (prise en charge immédiate de la page à la toute première
+visite). À `fetch` : copie du cache de `CACHE_NOM` d'abord, réseau seulement pour un
+fichier absent ; rien n'est remplacé en arrière-plan. De v28 à v34, la stratégie était
+« réseau d'abord » (mise à jour prise d'elle-même au chargement suivant) : elle a été
+abandonnée pour que la mise à jour reste au choix du joueur, ce qui impose à nouveau
+d'incrémenter `CACHE_NOM` à chaque modification (rappel dans `CLAUDE.md`).
 
 ### Enregistrement (`jeu.js`)
 

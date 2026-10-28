@@ -793,9 +793,58 @@ window.addEventListener('DOMContentLoaded', () => Jeu.initialiser());
 // console.warn plutôt que de laisser une exception non gérée — le jeu doit continuer
 // de fonctionner normalement à la fois sous file:// et si l'enregistrement échoue
 // pour toute autre raison.
+//
+// Nouvelle version : le service worker la télécharge en arrière-plan, puis ATTEND
+// (voir sw.js). Rien ne change par surprise, et jamais en pleine partie : l'écran
+// d'accueil propose « Mettre à jour », et c'est le joueur qui choisit le moment.
+// `controllerchange` a aussi lieu à la toute première installation : on ne recharge
+// que si le joueur a touché le bouton.
+const MiseAJour = {
+    inscription: null,
+    demandee: false,
+
+    surveiller(inscription) {
+        this.inscription = inscription;
+        // Une version attendait déjà (téléchargée lors d'une visite précédente).
+        this.montrer();
+        inscription.addEventListener('updatefound', () => {
+            const nouveau = inscription.installing;
+            if (!nouveau) return;
+            nouveau.addEventListener('statechange', () => {
+                if (nouveau.state === 'installed') this.montrer();
+            });
+        });
+        // À chaque retour dans le jeu, on regarde s'il y a du nouveau.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') inscription.update().catch(() => {});
+        });
+    },
+
+    montrer() {
+        // Sans « controller », c'est la toute première installation : rien à proposer.
+        const prete = !!(this.inscription && this.inscription.waiting && navigator.serviceWorker.controller);
+        document.getElementById('bandeau-mise-a-jour').hidden = !prete;
+    },
+
+    appliquer(bouton) {
+        if (!this.inscription || !this.inscription.waiting) return;
+        this.demandee = true;
+        bouton.disabled = true;
+        this.inscription.waiting.postMessage({ type: 'activer' });
+    }
+};
+
 if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (MiseAJour.demandee) location.reload();
+    });
     navigator.serviceWorker.register('./sw.js')
+        .then((inscription) => MiseAJour.surveiller(inscription))
         .catch((erreur) => console.warn('Service worker non disponible :', erreur));
+    window.addEventListener('DOMContentLoaded', () => {
+        const bouton = document.getElementById('bouton-mise-a-jour');
+        bouton.addEventListener('click', () => MiseAJour.appliquer(bouton));
+    });
 }
 
 // Stockage persistant : par défaut, le navigateur peut effacer de lui-même la copie

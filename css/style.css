@@ -696,6 +696,23 @@ h2 {
 
 /* Reprise d'une partie laissée en cours (octobre 2026), mise en avant sur l'écran
    d'accueil : c'est sans doute ce que veut faire un joueur qui revient. */
+/* Bandeau « nouvelle version prête » (écran d'accueil, voir la fin de js/jeu.js). */
+.bandeau-mise-a-jour {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    max-width: 420px;
+    padding: 10px 14px;
+    border: 1px solid #39ff88;
+    border-radius: 6px;
+}
+
+.bandeau-mise-a-jour p {
+    margin: 0;
+}
+
 .bouton-reprendre {
     min-height: 44px;
     padding: 0 20px;
