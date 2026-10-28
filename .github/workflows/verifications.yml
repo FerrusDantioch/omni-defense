@@ -15,7 +15,10 @@ permissions:
 jobs:
   verifier:
     name: Vérifier le jeu
-    runs-on: ubuntu-latest
+    # Version d'Ubuntu fixée : « ubuntu-latest » est passé à Ubuntu 26.04, où
+    # Playwright 1.56.1 ne sait pas installer Chromium (étape « Installer le
+    # navigateur de test » en échec). Ubuntu 24.04 est pris en charge.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Récupérer les fichiers du dépôt
