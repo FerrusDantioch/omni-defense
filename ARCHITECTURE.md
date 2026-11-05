@@ -207,7 +207,7 @@ simple du jeu, pour les joueurs et pour démarrer, se trouve dans `README.md`.
   supérieure (phase 7I) »).
 - **`outils/serveur-statique.js`** — petit serveur HTTP Node sans dépendance, utilisé
   uniquement pour prévisualiser le jeu pendant le développement (référencé par
-  `.claude/launch.json`, aussi bien à la racine du dossier `claude` qu'à la racine de
+  `.claude/launch.json`, aussi bien à la racine du dossier de travail qu'à la racine de
   `omni-defense` lui-même). Ne fait pas partie du jeu livré au joueur, qui reste un
   simple fichier `index.html` ouvrable directement. Complété en phase 5 avec les types
   MIME `.webmanifest` et `.png` (absents jusque-là, puisque rien de tel n'existait
@@ -1154,7 +1154,7 @@ erreur console dans les deux modes.
 
 ## Contenu additionnel post-lancement
 
-Nouvelle vague de contenu, discutée et planifiée en dehors de Claude Code, ouverte après
+Nouvelle vague de contenu, discutée et planifiée en dehors des séances de développement, ouverte après
 la clôture des chemins multiples et de la limite de tours (phases 6A/6B). Regroupe
 plusieurs sous-phases indépendantes ; seul leur ordre d'arrivée dans ce document reflète
 l'ordre dans lequel elles sont traitées, pas nécessairement leur numérotation finale (le
