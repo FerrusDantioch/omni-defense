@@ -17,7 +17,7 @@
 // Historique : de v28 à v34, stratégie « réseau d'abord » (mise à jour prise dès le
 // chargement suivant) ; v29 : ajout de statistiques.js et sauvegarde.js ; v35 : retour
 // à la copie d'abord, avec nouvelle version sur demande.
-const CACHE_NOM = 'omni-defense-v35';
+const CACHE_NOM = 'omni-defense-v36';
 
 // Débuts de nom de NOS caches (« defense-neon- » : ancien nom du jeu). Toutes les
 // applications de ferrusdantioch.github.io partagent la même liste de caches : on ne
